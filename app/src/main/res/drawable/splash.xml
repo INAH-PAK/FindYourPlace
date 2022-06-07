@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+        <item android:drawable="@color/white"/>
+        <item android:drawable="@drawable/app_logo" android:width="250dp" android:height="250dp"/>
+        <item android:drawable="@drawable/ic_baseline_my_location_24" android:width="60dp" android:height="60dp" android:gravity="end|bottom"/>
+</layer-list>

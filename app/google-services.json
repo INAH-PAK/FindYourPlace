@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "441148920749",
+    "project_id": "findyourlocation-a8b17",
+    "storage_bucket": "findyourlocation-a8b17.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:441148920749:android:b8625b8e7deee1c4100724",
+        "android_client_info": {
+          "package_name": "com.wookie_soft.findyourplace"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "441148920749-3p5fhkchanlqpn4ck88c0078gtepgiq5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAo6_QQHK9sf7v_Pb1lxb1qrIQ-iNC5nU8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "441148920749-3p5fhkchanlqpn4ck88c0078gtepgiq5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,18 @@
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        google()
+        mavenCentral()
+    }
+}
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google()
+        mavenCentral()
+        // 카카오 로그인 라이브러리 - 카카오 서버
+        maven { url 'https://devrepo.kakao.com/nexus/content/groups/public/' }// 여기서 뭘 가져올지를 build.gradle에서 import 하는고다!
+    }
+}
+rootProject.name = "FindYourPlace"
+include ':app'
