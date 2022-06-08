@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "441148920749-l5tm43lrt9sh1hdeaphb344kl956dt0s.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.wookie_soft.findyourplace",
+            "certificate_hash": "f3312529142001e155b0b3d1ed1e6080cb479cf2"
+          }
+        },
+        {
           "client_id": "441148920749-3p5fhkchanlqpn4ck88c0078gtepgiq5.apps.googleusercontent.com",
           "client_type": 3
         }
