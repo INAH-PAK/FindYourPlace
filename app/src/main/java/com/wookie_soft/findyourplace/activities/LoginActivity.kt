@@ -19,7 +19,13 @@ import com.navercorp.nid.NaverIdLoginSDK
 import com.navercorp.nid.oauth.OAuthLoginCallback
 import com.wookie_soft.findyourplace.G
 import com.wookie_soft.findyourplace.databinding.ActivityLoginBinding
+import com.wookie_soft.findyourplace.model.NaverUserInfoResponce
 import com.wookie_soft.findyourplace.model.UserAccount
+import com.wookie_soft.findyourplace.network.RetrofitApiService
+import com.wookie_soft.findyourplace.network.RetrofitHelper
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class LoginActivity : AppCompatActivity() {
     val binding:ActivityLoginBinding by lazy { ActivityLoginBinding.inflate(layoutInflater) }
@@ -213,9 +219,53 @@ class LoginActivity : AppCompatActivity() {
 
                 // 사용자 정보를 가져오는 REST API 의 접속토큰 (access token)을 받아오기
                 val accessToken:String? = NaverIdLoginSDK.getAccessToken()
-                Toast.makeText(this@LoginActivity, "$accessToken", Toast.LENGTH_SHORT).show()
-                //TODO 사용자 정보를 가져오는 네트워크 작업수행 ( => Retrofit library 사용 )
+                Log.i(" 네이버 로그인 성공으로 받은 토큰 ", accessToken + "")
+
+                // 사용자 정보를 가져오는 네트워크 작업수행 ( => Retrofit library 사용 )
+                // 쭉 내려서 API 어쩌구 ㄱㄱ   요청 URI  :  https://openapi.naver.com/v1/nid/me
+                //                                      - 사이트 루트 주소 : https://openapi.naver.com
+                //                                        - 레트로핏 쿼리 : v1/nid/me
+
+                //  출력 결과 객체보면,
+                // 커다란 첫째 객체 : { resultcode , message, response}
+                //                                            |
+                //                                            ✔
+                //그 안의  둘째 객체 :                        { id, nickname . . .}
+                // 이 걸 보고 바로 클래스 2개 만들어야 한다고 생각 !!!
+
+                //일단 레트로핏 헬퍼 만들기 ㄱㄱ
+                //완전 줄여서 사용 ㄱㄱ
+                // 원래는
+                //var call = retrofit.create(RetrofitApiService::class.java).getNaverIdUserInfo()
+
+                val retrofit = RetrofitHelper.getRetorofitInstanse("https://openapi.naver.com")
+                retrofit.create(RetrofitApiService::class.java).getNaverIdUserInfo("Bearer $accessToken")
+                    .enqueue(object :Callback<NaverUserInfoResponce>{ // 콜백객체 만들기
+                        override fun onResponse(
+                            call: Call<NaverUserInfoResponce>,
+                            response: Response<NaverUserInfoResponce>
+                        ) {
+                            val userInfo: NaverUserInfoResponce? = response.body()
+                            var id:String = userInfo?.response?.id?: ""
+                            var email:String = userInfo?.response?.email?: ""
+                            G.userAccount = UserAccount(id,email)
+                            Toast.makeText(this@LoginActivity, "네이버 사용자 정보가져오기 성공. 이메일 $email" , Toast.LENGTH_SHORT).show()
+                            startActivity(Intent(this@LoginActivity, MainActivity::class.java))
+                            finish()
+                        }
+                        override fun onFailure(call: Call<NaverUserInfoResponce>, t: Throwable) {
+                            Toast.makeText(this@LoginActivity, "네이버 사용자 정보가져오기 실패 $t", Toast.LENGTH_SHORT).show()
+                        }
+
+
+                })
+
+
+
+
             }
+
+
 
         })
 
