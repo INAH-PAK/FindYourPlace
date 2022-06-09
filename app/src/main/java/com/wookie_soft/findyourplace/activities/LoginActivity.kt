@@ -50,8 +50,6 @@ class LoginActivity : AppCompatActivity() {
         //3. 이메일 로그인
         binding.layoutEmailLogin.setOnClickListener {
             startActivity(Intent(this, EmailSignInActivity::class.java))
-
-
         }
 
         //4. 간편로그인 버튼들
