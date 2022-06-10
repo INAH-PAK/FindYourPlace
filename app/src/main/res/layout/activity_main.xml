@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".activities.MainActivity">
 
     <!--    액션바 대체   -->
@@ -54,5 +54,40 @@
             layout="@layout/choice_list" />
 
     </HorizontalScrollView>
+
+<!--    이건 최신에 만들어진 xml로 탭 을 만들 때 사용할 수 있음. 새로나온 탭 아이템.
+        근데, 뷰페이저는 아거 쓰면 안됨. 뷰 페이저 쓰면 자동으로 탭 추가 됨.-->
+
+
+    <com.google.android.material.tabs.TabLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/scrollView"
+        android:id="@+id/layout_tab"
+        app:tabIndicatorColor="@color/black"
+        app:tabSelectedTextColor="@color/black"
+        app:tabTextColor="#ABABAB">
+
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="LIST"/>
+
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="MAP"/>
+
+
+
+    </com.google.android.material.tabs.TabLayout>
+
+    <!--    또 새로 생긴 놈 : fragment container -->
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/container_fragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/layout_tab"
+        android:layout_marginTop="8dp"/>
 
 </RelativeLayout>
