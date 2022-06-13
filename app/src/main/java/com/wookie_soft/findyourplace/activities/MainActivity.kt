@@ -1,17 +1,30 @@
 package com.wookie_soft.findyourplace.activities
 
+import android.Manifest
+import android.content.pm.PackageManager
 import android.location.Location
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Looper
 import android.view.Menu
 import android.view.View
 import android.widget.ImageView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
+import androidx.core.app.ActivityCompat
+import com.google.android.gms.location.*
 import com.google.android.material.tabs.TabLayout
 import com.wookie_soft.findyourplace.R
 import com.wookie_soft.findyourplace.databinding.ActivityMainBinding
 import com.wookie_soft.findyourplace.fragments.PlaceListFragement
 import com.wookie_soft.findyourplace.fragments.PlaceMapFragement
+import com.wookie_soft.findyourplace.network.RetrofitApiService
+import com.wookie_soft.findyourplace.network.RetrofitHelper
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import java.util.concurrent.Callable
 
 class MainActivity : AppCompatActivity() {
 
@@ -21,10 +34,13 @@ class MainActivity : AppCompatActivity() {
     //2 현재 내 위치 정보 객체 ( 위도 , 경도 정보를 맴버로 보유한 친구 )
     var myLocation: Location? = null
 
+    //3. 구글
+    val providerClient: FusedLocationProviderClient by lazy { LocationServices.getFusedLocationProviderClient(this) }
+
     // TODO [ Google사의  Fused Location API 사용 - play-services-locaion ]
 
 
-    val binding:ActivityMainBinding by lazy { ActivityMainBinding.inflate(layoutInflater) }
+    val binding: ActivityMainBinding by lazy { ActivityMainBinding.inflate(layoutInflater) }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
@@ -78,8 +94,69 @@ class MainActivity : AppCompatActivity() {
         // 특정 키워드 단축 choice 버튼들에 리스너 처리하는 기능 메소드
         setChoiceButtonListener()
 
+        // 내 위치정보 퍼미션
+        val permissions:Array<String> = arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION)
+        if( checkSelfPermission(permissions[0]) == PackageManager.PERMISSION_DENIED){
+            requestPermissions(permissions ,10 ) // 퍼미션 요청 다이알로그를 보이기. -> 사용자가 허용 거부 선택을 하면 , 이  override fun onRequestPermissionsResult 발동
+        }else{
+            Toast.makeText(this, "위치 사용를 사용 할 수 있씁니다", Toast.LENGTH_SHORT).show()
+            requestMyLocation()
+        }
+
 
     }// onCreate
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+       super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if(requestCode == 10 && grantResults[0]==PackageManager.PERMISSION_GRANTED){
+            requestMyLocation()
+        }else{
+            Toast.makeText(this, "내 위치 정보를 제공하지 않아서 검색기능을 사용할 수 없습니다", Toast.LENGTH_SHORT).show()
+        }
+
+    }
+
+    private fun requestMyLocation(){
+        //내 위치 정보얻어오는 기능 코드
+
+        val request: LocationRequest = LocationRequest.create()
+        request.interval = 1000
+        request.priority = Priority.PRIORITY_HIGH_ACCURACY
+        // 실시간 위치정보 갱신 요청
+
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+
+            return
+        }
+        providerClient.requestLocationUpdates(request,locaionCallback, Looper.getMainLooper())
+    }
+
+    private val locaionCallback: LocationCallback = object : LocationCallback(){
+        override fun onLocationResult(p0: LocationResult) {
+        super.onLocationResult(p0)
+        //내 위치 정보 얻어오기
+         myLocation = p0.lastLocation
+
+        // 내 위치 정보 얻어왔으니 업뎃 그만
+        providerClient.removeLocationUpdates(this) // this : 로케이션 콜백 객체 자신
+
+        // 내 위치 정보로 타ㅏ오 검색 시작
+        searchPlaces()
+         }
+    }
+
+
 
     private fun setChoiceButtonListener(){
 
@@ -129,18 +206,33 @@ class MainActivity : AppCompatActivity() {
 
     // Kakao 키워드 장소 검색 API 작업을 수행하는 기능메소드
     private fun searchPlaces(){
-        Toast.makeText(this, "$searchQuery", Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, "$searchQuery : ${myLocation?.latitude}", Toast.LENGTH_SHORT).show()
         // 레트로핏을 이용하여 카카오 키워드 검색 API 를 파싱하기.
         // 공식 가이드 문서 : https://developers.kakao.com/docs/latest/ko/local/dev-guide#search-by-keyword
         // API 테스트 : https://developers.kakao.com/tool/rest-api/open/get/v2-local-search-keyword.%7Bformat%7D
+        // 이 페이지의 응답 부분 보면, Meta : PlaceMeta
         // Parameter -> 여기서의 x 좌표 => longitude 주의.
 
+        val retrofit : Retrofit = RetrofitHelper.getRetorofitInstanse("https://dapi.kakao.com")
+        retrofit.create(RetrofitApiService::class.java)
+            .searchPlacesToString(searchQuery,myLocation?.longitude.toString(),myLocation?.latitude.toString())
+            .enqueue(object : Callback<String>{
+                override fun onResponse(call: Call<String>, response: Response<String>) {
+                    var result:String? = response.body()
+                    AlertDialog.Builder(this@MainActivity).setMessage("${result.toString()} 입니다.")
+                        .create().show()
+                }
 
+                override fun onFailure(call: Call<String>, t: Throwable) {
+                    Toast.makeText(this@MainActivity, "서버 오류가 있습니다. + $t \n 잠시 뒤에 다시 시도해주세요", Toast.LENGTH_SHORT).show()
+                }
+            })
 
 
 
 
     }
+
 
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
