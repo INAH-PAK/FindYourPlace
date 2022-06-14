@@ -10,8 +10,8 @@ data class Place(
     var phone : String,
     var address_name : String,
     var road_address_name : String,
-    var x : String,
-    var y : String,
+    var x : String,   // 주의 !!  longitude
+    var y : String,  //          latitude
     var place_url : String,
     var distance : String // 내 좌표 까지의 거리 (단위 : meter) - 단, x,y 좌표를 준 경우에만 옴
     )

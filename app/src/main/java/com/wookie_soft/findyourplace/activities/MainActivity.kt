@@ -18,6 +18,7 @@ import com.wookie_soft.findyourplace.R
 import com.wookie_soft.findyourplace.databinding.ActivityMainBinding
 import com.wookie_soft.findyourplace.fragments.PlaceListFragement
 import com.wookie_soft.findyourplace.fragments.PlaceMapFragement
+import com.wookie_soft.findyourplace.model.KakaoSearchPlaceResponce
 import com.wookie_soft.findyourplace.network.RetrofitApiService
 import com.wookie_soft.findyourplace.network.RetrofitHelper
 import retrofit2.Call
@@ -39,6 +40,8 @@ class MainActivity : AppCompatActivity() {
 
     // TODO [ Google사의  Fused Location API 사용 - play-services-locaion ]
 
+    // 4. 카카오 검색 결과 응답 객체 만들기
+    var searchPlaceResponce:KakaoSearchPlaceResponce? =null
 
     val binding: ActivityMainBinding by lazy { ActivityMainBinding.inflate(layoutInflater) }
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -62,6 +65,7 @@ class MainActivity : AppCompatActivity() {
         supportFragmentManager.beginTransaction().add(R.id.container_fragment,PlaceListFragement()).commit()
 
         // Tab2 클릭시, Tab2 화면에 보여져야 할 프레그먼트도 붙이자.
+        // 정리 ! 탭 버튼을 누를 때 마다 프레그먼트를 붙임 !!!
         binding.layoutTab.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener{
             override fun onTabSelected(tab: TabLayout.Tab?) { // 탭 클릭시 불려짐
                // Tab1 -> List Layout , Tab2 -> Map Layout
@@ -214,19 +218,54 @@ class MainActivity : AppCompatActivity() {
         // Parameter -> 여기서의 x 좌표 => longitude 주의.
 
         val retrofit : Retrofit = RetrofitHelper.getRetorofitInstanse("https://dapi.kakao.com")
+        // 스칼라스로 받아오는 거
+//        retrofit.create(RetrofitApiService::class.java)
+//            .searchPlacesToString(searchQuery,myLocation?.longitude.toString(),myLocation?.latitude.toString())
+//            .enqueue(object : Callback<String>{
+//                override fun onResponse(call: Call<String>, response: Response<String>) {
+//                    var result:String? = response.body()
+//                    AlertDialog.Builder(this@MainActivity).setMessage("${result.toString()} 입니다.")
+//                        .create().show()
+//                }
+//
+//                override fun onFailure(call: Call<String>, t: Throwable) {
+//                    Toast.makeText(this@MainActivity, "서버 오류가 있습니다. + $t \n 잠시 뒤에 다시 시도해주세요", Toast.LENGTH_SHORT).show()
+//                }
+//            })
+
+        // 제이슨으로 받아오는 거
         retrofit.create(RetrofitApiService::class.java)
-            .searchPlacesToString(searchQuery,myLocation?.longitude.toString(),myLocation?.latitude.toString())
-            .enqueue(object : Callback<String>{
-                override fun onResponse(call: Call<String>, response: Response<String>) {
-                    var result:String? = response.body()
-                    AlertDialog.Builder(this@MainActivity).setMessage("${result.toString()} 입니다.")
-                        .create().show()
+            .searchPlacesToJson(searchQuery,myLocation?.longitude.toString(), myLocation?.latitude.toString())
+            .enqueue(object : Callback<KakaoSearchPlaceResponce>{
+                override fun onResponse(
+                    call: Call<KakaoSearchPlaceResponce>,
+                    response: Response<KakaoSearchPlaceResponce>
+                ) {
+                    // 엑티비티의 맴버변수 == 프레그먼트들에서 해당 액티비티를 부를 수 있으니, 이 Json 파싱 결과 정보를 객체로 만들자 . -> 맴버변수 4
+                    searchPlaceResponce = response.body()
+                    // 1. 우선 잘 객체가 파싱되었는지 확인부터 하자. ( 현재 이 객체의 도큐먼트 값이 0개가 아니면 됨 ==  원래 여러개의 결과들이 도큐먼트로 오니까)
+                    //  AlertDialog.Builder(this@MainActivity).setMessage(searchPlaceResponce?.documents!!.size.toString()).show()
+
+                    // 2. 무조건 검색이 완료되면 PlaceListFragment부터 보여주기,
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.container_fragment,PlaceListFragement()).commit() // 원래 있던거 걍 뜯어내서 다시 붙임. -> 여기서는 메모리 더 효율적
+
+                    // 3. 탭 버튼의 위치를 "LIST" 로 변경
+                    binding.layoutTab.getTabAt(0)?.select() // 이게 모냐면 우리가 지금 0번째가 LIST잖아? 그래서
+                    // TODO 나는 지도의 기준 좌표를 받아서 그걸로 다시 파싱하는 작업 하기 !
+
+
+
                 }
 
-                override fun onFailure(call: Call<String>, t: Throwable) {
-                    Toast.makeText(this@MainActivity, "서버 오류가 있습니다. + $t \n 잠시 뒤에 다시 시도해주세요", Toast.LENGTH_SHORT).show()
+                override fun onFailure(call: Call<KakaoSearchPlaceResponce>, t: Throwable) {
+                    Toast.makeText(this@MainActivity, "서버가 정상이 아닙니다 이따가 다시 시ㅗ해주세욤", Toast.LENGTH_SHORT).show( )
                 }
+
             })
+
+
+
 
 
 

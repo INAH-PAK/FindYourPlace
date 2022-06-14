@@ -1,5 +1,6 @@
 package com.wookie_soft.findyourplace.network
 
+import com.wookie_soft.findyourplace.model.KakaoSearchPlaceResponce
 import com.wookie_soft.findyourplace.model.NaverUserInfoResponce
 import retrofit2.Call
 import retrofit2.http.GET
@@ -24,6 +25,13 @@ interface RetrofitApiService {
     @Headers("Authorization: KakaoAK 0da232ba003e1dbcaaf99f95dc4761ab")
     @GET("/v2/local/search/keyword.json")
     fun searchPlacesToString(@Query("query") query: String, @Query("x") longitude:String, @Query("y") latitude:String):Call<String>
+    // query , longitude , latitude => 내가 보낼 요청값들  ////     @Query("query") . . => 서버에서 내가 보낸 값을 이걸로 알아들음
+
+
+    //
+    @Headers("Authorization: KakaoAK 0da232ba003e1dbcaaf99f95dc4761ab")
+    @GET("/v2/local/search/keyword.json")
+    fun searchPlacesToJson(@Query("query") query: String, @Query("x") longitude:String, @Query("y") latitude:String):Call<KakaoSearchPlaceResponce>
                            // query , longitude , latitude => 내가 보낼 요청값들  ////     @Query("query") . . => 서버에서 내가 보낸 값을 이걸로 알아들음
 
 
