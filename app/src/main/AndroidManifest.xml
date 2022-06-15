@@ -6,6 +6,7 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
 
+
     <application
         android:name=".GlobalApplication"
         android:allowBackup="true"
@@ -56,6 +57,7 @@
                     android:scheme="kakao4261a538539e260f231cbc7a745eb332" />
             </intent-filter>
         </activity>
+        <meta-data android:name="com.kakao.sdk.AppKey" android:value="4261a538539e260f231cbc7a745eb332"/>
     </application>
 
 </manifest>

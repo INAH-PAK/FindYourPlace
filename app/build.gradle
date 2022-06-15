@@ -47,6 +47,7 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.9.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
     implementation 'com.squareup.retrofit2:converter-scalars:2.9.0'
+
     // 추가 라이브러리들 ( Image load library)
     implementation 'com.github.bumptech.glide:glide:4.13.2'
 
@@ -71,6 +72,10 @@ dependencies {
 
     // Google Fused Location 내 위치 라이브러리
     implementation 'com.google.android.gms:play-services-location:20.0.0'
+
+    // Kakao Map SDK jar library.....
+    implementation files('libs/libDaumMapAndroid.jar')
+
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
