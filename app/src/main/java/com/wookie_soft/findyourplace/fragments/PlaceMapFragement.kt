@@ -37,10 +37,6 @@ class PlaceMapFragement : Fragment() {
         // 지도 관련 설정( 자도위치 , 마커 추가 . . . )
         setMapAndMarkers()
 
-
-
-
-
     }
 
     private fun setMapAndMarkers(){
@@ -86,8 +82,6 @@ class PlaceMapFragement : Fragment() {
                 selectedMarkerType= MapPOIItem.MarkerType.YellowPin
                 // 해당 POI item(마커)와 관련된 정보를 저장하고 있는 데이터객체를 보관
                 userObject= it
-
-
             }
             mapView.addPOIItem(marker)
         }

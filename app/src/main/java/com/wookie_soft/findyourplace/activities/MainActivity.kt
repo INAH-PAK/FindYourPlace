@@ -38,7 +38,7 @@ class MainActivity : AppCompatActivity() {
     //3. 구글
     val providerClient: FusedLocationProviderClient by lazy { LocationServices.getFusedLocationProviderClient(this) }
 
-    // TODO [ Google사의  Fused Location API 사용 - play-services-locaion ]
+    // [ Google사의  Fused Location API 사용 - play-services-locaion ]
 
     // 4. 카카오 검색 결과 응답 객체 만들기
     var searchPlaceResponce:KakaoSearchPlaceResponce? =null

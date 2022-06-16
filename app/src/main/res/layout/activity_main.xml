@@ -82,12 +82,19 @@
 
     </com.google.android.material.tabs.TabLayout>
 
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"/>
+
+
     <!--    또 새로 생긴 놈 : fragment container -->
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/container_fragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/layout_tab"
-        android:layout_marginTop="8dp"/>
+        android:layout_marginTop="8dp" />
 
 </RelativeLayout>
