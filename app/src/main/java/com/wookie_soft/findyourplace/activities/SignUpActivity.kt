@@ -85,6 +85,7 @@ class SignUpActivity : AppCompatActivity() {
                     // 이렇게 콜렉션 만들면 식별자? 넘버값이 랜덤하게 만들어짐.
                     db.collection("emailUsers").add(user).addOnSuccessListener {
                         AlertDialog.Builder(this).setMessage("회원가입을 축하합니다 !")
+
                             .setPositiveButton("확인"
                             ) { p0, p1 -> finish() }.create().show()
                     }

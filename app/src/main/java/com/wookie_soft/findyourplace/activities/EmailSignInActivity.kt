@@ -68,6 +68,7 @@ class EmailSignInActivity : AppCompatActivity() {
 
                         // 이 로그인 정보를 가진 객체를 만들어서 내 앱 내에서 글로벌하게 쓰자 !
                         G.userAccount = UserAccount(id,email)
+                        G.loginType = G.EMAIL
 
                         val intent:Intent = Intent(this,MainActivity::class.java)
                         // 액티비티는 완전 개별 단위라서 여기서 다른 액티비티 못 건들임.

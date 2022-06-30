@@ -2,8 +2,8 @@
     <!-- Base application theme. -->
     <style name="Theme.FindYourPlace" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/purple_500</item>
-        <item name="colorPrimaryVariant">@color/purple_700</item>
+        <item name="colorPrimary">@color/white</item>
+        <item name="colorPrimaryVariant">@color/white</item>
         <item name="colorOnPrimary">@color/white</item>
         <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/teal_200</item>
@@ -14,12 +14,10 @@
         <!-- Customize your theme here. -->
     </style>
 
-    <!--    Splash Activity의 커스텀 화면 테마-->
+    <!-- Splash Activity 화면 테마   -->
     <style name="SplashTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="android:windowBackground">@drawable/splash</item>
-
-        <!--        상태표시줄 숨기기-->
+        <!-- 상태표시줄 안보이기 -->
         <item name="android:windowFullscreen">true</item>
-
     </style>
 </resources>

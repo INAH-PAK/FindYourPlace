@@ -86,7 +86,8 @@
         android:id="@+id/progressBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"/>
+        android:layout_centerInParent="true"
+        android:max="100"/>
 
 
     <!--    또 새로 생긴 놈 : fragment container -->

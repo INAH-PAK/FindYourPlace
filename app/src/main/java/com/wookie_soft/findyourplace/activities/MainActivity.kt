@@ -1,19 +1,39 @@
 package com.wookie_soft.findyourplace.activities
 
 import android.Manifest
+import android.content.DialogInterface
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Looper
+import android.util.Log
 import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
+import com.google.android.gms.auth.GoogleAuthUtil
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.location.*
+import com.google.android.gms.tasks.Task
 import com.google.android.material.tabs.TabLayout
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.auth.FirebaseAuthCredentialsProvider
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
+import com.kakao.sdk.common.KakaoSdk
+import com.kakao.sdk.user.UserApiClient
+import com.navercorp.nid.NaverIdLoginSDK
+import com.wookie_soft.findyourplace.G
 import com.wookie_soft.findyourplace.R
 import com.wookie_soft.findyourplace.databinding.ActivityMainBinding
 import com.wookie_soft.findyourplace.fragments.PlaceListFragement
@@ -103,7 +123,7 @@ class MainActivity : AppCompatActivity() {
         if( checkSelfPermission(permissions[0]) == PackageManager.PERMISSION_DENIED){
             requestPermissions(permissions ,10 ) // 퍼미션 요청 다이알로그를 보이기. -> 사용자가 허용 거부 선택을 하면 , 이  override fun onRequestPermissionsResult 발동
         }else{
-            Toast.makeText(this, "위치 사용를 사용 할 수 있씁니다", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "위치 사용를 사용 할 수 있습니다", Toast.LENGTH_SHORT).show()
             requestMyLocation()
         }
 
@@ -124,9 +144,60 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId ){
+            R.id.logout -> clickLogout()
+            R.id.inah -> clickAppInfo()
+        }
+        return onOptionsItemSelected(item)
+    }
+
+    fun clickLogout(){
+        // 로그아웃 버튼 클릭
+        when( G.loginType ){
+            G.NONE ->{
+                Toast.makeText(this, "계정으로 로그인 해주세요", Toast.LENGTH_SHORT).show()}
+            G.KAKAO -> {
+                // 카카오 로그아웃
+                UserApiClient.instance.logout { error ->
+                    if (error != null) {
+                        Log.i("logout"," 카카오톡 로그아웃 실패 $error")
+                    }
+                    else {
+                        Log.i("logout"," 카카오톡 로그아웃 성공")
+                    }
+                }}
+            G.GOOGLE -> {
+                // 구글 로그아웃
+
+                val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).build()
+                var mGoogleSignInClient = this.let { GoogleSignIn.getClient(it, gso) }
+                mGoogleSignInClient.signOut().addOnCompleteListener {
+                    Toast.makeText(this, "구글 로그아웃 성공", Toast.LENGTH_SHORT).show()
+                }
+            }
+            G.EMAIL ->{
+                Firebase.auth.signOut()
+            }
+            G.NAVER -> {
+                NaverIdLoginSDK.logout()     }
+        }
+        G.loginType = G.NONE
+        startActivity(Intent(this,LoginActivity::class.java))
+        finish()
+    }
+    fun clickAppInfo(){
+        AlertDialog.Builder(this)
+            .setTitle("개발자 정보")
+            .setMessage("inahpakkr@gmail.com")
+            .setPositiveButton("확인", DialogInterface.OnClickListener { dialogInterface, i ->
+                dialogInterface.dismiss()
+            })
+    }
+
     private fun requestMyLocation(){
         //내 위치 정보얻어오는 기능 코드
-
+        val progressBar:ProgressBar = binding.progressBar
         val request: LocationRequest = LocationRequest.create()
         request.interval = 1000
         request.priority = Priority.PRIORITY_HIGH_ACCURACY
@@ -145,6 +216,8 @@ class MainActivity : AppCompatActivity() {
         }
         providerClient.requestLocationUpdates(request,locaionCallback, Looper.getMainLooper())
     }
+
+
 
     private val locaionCallback: LocationCallback = object : LocationCallback(){
         override fun onLocationResult(p0: LocationResult) {
@@ -206,6 +279,7 @@ class MainActivity : AppCompatActivity() {
         // 검색 후, 검색창에 글씨가 있다면 지우기.
         binding.etSearch.text.clear() // 이걸 하면 포커스가 일로 가버림.
         binding.etSearch.clearFocus() // 이전 포커스로 인해 커서가 남아있을 수 도 있어서.
+
     }
 
     // Kakao 키워드 장소 검색 API 작업을 수행하는 기능메소드
@@ -254,12 +328,12 @@ class MainActivity : AppCompatActivity() {
                     binding.layoutTab.getTabAt(0)?.select() // 이게 모냐면 우리가 지금 0번째가 LIST잖아? 그래서
                     // TODO 나는 지도의 기준 좌표를 받아서 그걸로 다시 파싱하는 작업 하기 !
 
-
+                    binding.progressBar.visibility = ProgressBar.INVISIBLE
 
                 }
 
                 override fun onFailure(call: Call<KakaoSearchPlaceResponce>, t: Throwable) {
-                    Toast.makeText(this@MainActivity, "서버가 정상이 아닙니다 이따가 다시 시ㅗ해주세욤", Toast.LENGTH_SHORT).show( )
+                    Toast.makeText(this@MainActivity, "서버가 정상이 아닙니다 이따가 다시 시도해주세요", Toast.LENGTH_SHORT).show( )
                 }
 
             })

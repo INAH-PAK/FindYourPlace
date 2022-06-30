@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item android:id="@+id/menu_aa" android:title="aa"/>
-    <item android:id="@+id/menu_bb" android:title="bb"/>
-    <item android:id="@+id/menu_usetInfo" android:title="내 정보 보기"/>
+    <item android:id="@+id/logout" android:title="로그아웃"/>
+    <item android:id="@+id/inah" android:title="앱 정보"/>
 </menu>

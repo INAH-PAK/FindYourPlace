@@ -75,6 +75,7 @@ dependencies {
 
     // Kakao Map SDK jar library.....
     implementation files('libs/libDaumMapAndroid.jar')
+    implementation 'com.google.firebase:firebase-auth-ktx:21.0.5'
 
 
     testImplementation 'junit:junit:4.13.2'

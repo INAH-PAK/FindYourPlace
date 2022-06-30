@@ -24,6 +24,10 @@ class SplashActicity : AppCompatActivity() {
 ////
 ////        } ,1500)
             // 이걸 람다로 죽이자 밑에 ㄱㄱ
+
+        // them 활용->
+
+
          Handler(Looper.getMainLooper()).postDelayed({
              // 코틀린에서는 안에 파라미터가 있으면 a -> 이런식으로 쓰는거임 a=> 이거는 자바스크립트야 인아야 !!!
              startActivity(Intent(this,LoginActivity::class.java))   // this -> 익명 객체인 Runnable 참조.

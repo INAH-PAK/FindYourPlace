@@ -8,5 +8,14 @@ class G {
 
     companion object{
         var userAccount:UserAccount?= null
+
+        const val NONE = -1
+        const val KAKAO = 1
+        const val GOOGLE = 2
+        const val EMAIL = 3
+        const val NAVER = 4
+
+
+        var loginType : Int = -1
     }
 }

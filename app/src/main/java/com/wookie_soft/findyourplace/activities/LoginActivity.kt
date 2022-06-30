@@ -91,7 +91,7 @@ class LoginActivity : AppCompatActivity() {
                     if(user != null){
                         var id:String = user.id.toString()
                         var email:String = user.kakaoAccount?.email ?:"" //이메일이 null 일 수 있음. -> 엘비스 연산자로 널일때 값을 간단하게 넣을 수 있음.
-
+                        G.loginType = G.KAKAO
                         G.userAccount = UserAccount(id, email)
 
                         //이제 메인엑티비티로 이동
@@ -162,7 +162,7 @@ class LoginActivity : AppCompatActivity() {
                var email :String = account.email ?: "" // 엘비스 연산자 : 혹시 앞의 계정의 값이 null이면 빈칸으로 해라
                Toast.makeText(this@LoginActivity, "아이디 : $id , 이메일 $email", Toast.LENGTH_SHORT).show()
                G.userAccount = UserAccount(id,email)
-
+                G.loginType = G.GOOGLE
                // 이제 로그인 끝낫으니 메인 ㄱㄱ
                startActivity(Intent(this@LoginActivity, MainActivity::class.java))
 
@@ -248,6 +248,7 @@ class LoginActivity : AppCompatActivity() {
                             var email:String = userInfo?.response?.email?: ""
                             G.userAccount = UserAccount(id,email)
                             Toast.makeText(this@LoginActivity, "네이버 사용자 정보가져오기 성공. 이메일 $email" , Toast.LENGTH_SHORT).show()
+                            G.loginType = G.NAVER
                             startActivity(Intent(this@LoginActivity, MainActivity::class.java))
                             finish()
                         }

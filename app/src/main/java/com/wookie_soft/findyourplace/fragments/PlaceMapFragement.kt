@@ -51,7 +51,7 @@ class PlaceMapFragement : Fragment() {
         var lng: Double = (activity as MainActivity).myLocation?.longitude ?: 126.9784147
 
 
-        // 위도/경도를 카카오지도의 맴좌표객체(MapPoint)로 생성
+        // 위도 / 경도를 카카오지도의 맴좌표객체(MapPoint)로 생성
         var myMapPoint: MapPoint = MapPoint.mapPointWithGeoCoord(lat, lng)
         mapView.setMapCenterPointAndZoomLevel(myMapPoint, 5, true)
         mapView.zoomIn(true)
